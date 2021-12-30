@@ -1,0 +1,232 @@
+---
+title: "8주차 퀴즈 연습 LAB8~"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 4 27 '
+output: html_document
+---
+
+#####LAB8
+#Histogram
+```{i)}
+library(MASS)
+hist(geyser$waiting,xlab = "waiting", ylab = "freq", main = "waiting time frequency",col = "blue")
+```
+
+```{ii)}
+hist(geyser$waiting,xlab = "waiting", ylab = "freq", col = "blue", breaks =seq(40,110,by = 2))
+```
+
+```{iii)}
+hist(geyser$waiting,xlab = "waiting", ylab = "freq", col = "blue", breaks =seq(40,110,by = 2), xaxt = 'n', yaxt = 'n')
+axis(1, at = seq(40,110,by=4),cex.axis=0.5)
+axis(2, at = seq(0,30,by=5),cex.axis = 0.5)
+```
+
+```{Scatter Plots}
+c1 <- painters$Drawing
+c2 <- 20-c1
+
+with(painters, plot(Colour, c1, pch = 16, xlab = "Colour", ylab= "Drawing", type = "p", col = "darkmagenta", xaxt = 'n', yaxt = 'n'))
+points(painters$Colour,c2, type = "p", col = "blue", pch = 16)
+
+axis(1, at = seq(0,18,by = 2), cex.axis = 0.6)
+axis(2, at = seq(6,18,by = 2), cex.axis = 0.6, las = 1)
+
+abline(h = mean(c(c1,c2)), col = "cornflowerblue")
+abline(v = mean(painters$Colour), col = "gold")
+
+title(main = list("Painter's colours versus drawing", cex = 0.9, col ="deeppink"))
+```
+
+```{Line Plots}
+price1 <- c(14,21,10,20,22,17,23,25,30,18)
+price2 <- c(10,19,12,21,28,15,22,29,26,20)
+
+plot(price1, xlab = "time", ylab = "price", type = "b", pch = 2, cex = 0.7, col = "red", lwd = "2")
+points(price2, type = "b", pch = 2, cex = 0.7, col = "blue", lwd = 2)
+
+title(main = list("Price of Goods", col = "darkgreen"))
+```
+
+
+#####LAB11
+#Plotting with ggplot - Carseats
+```{i)~iv)}
+library(ggplot2)
+install.packages('ISLR')
+library(ISLR)
+ggplot(Carseats, aes(x = CompPrice, y = Sales)) +
+  scale_y_continuous(trans = "sqrt") + 
+  ylab("Sales in thousands") +
+  geom_point() +
+  geom_smooth(se = F, col = "red", method = lm)
+
+```
+
+```{v)}
+ggplot(Carseats, aes(x = CompPrice, y = Sales, col = as.factor(Urban))) +
+  scale_y_continuous(trans = "sqrt") + 
+  ylab("Sales in thousands") +
+  geom_point()
+```
+
+```{vi)}
+ggplot(Carseats, aes(x = CompPrice, y = Sales, col = as.factor(US), shape = as.factor(US))) +
+  scale_y_continuous(trans = "sqrt") + 
+  ylab("Sales in thousands") +
+  geom_point()
+```
+
+#Iris dataset
+```{i)~iii)}
+data(iris)
+ggplot(iris, aes(x = Petal.Width, y = Sepal.Length, size = Petal.Length, col = as.factor(Species))) +
+  geom_point()
+```
+
+
+#####LAB12
+#Computers from the time you were born (1990s)
+```{a)~d)}
+computers <- read.csv("Computers.csv")
+head(computers)
+str(computers)
+View(computers)
+
+ggplot(computers, aes(x = speed+hd+ram, y = price))+
+  geom_point()+
+  scale_x_continuous(trans = "log")+
+  geom_smooth(method = lm)
+```
+
+```{e)}
+ggplot(data = computers, mapping = aes(x = speed+hd+ram, y = price, col = cd))+
+  geom_point()+
+  scale_x_continuous(trans = "log")
+```
+
+```{f)}
+ggplot(data = computers, mapping = aes(x = speed+hd+ram, y = price, size = screen))+
+  geom_point(alpha = 0.5)+
+  scale_x_continuous(trans = "log")
+```
+
+#Pigeon racing dataset
+```{a)~c)}
+pigeon <- read.csv("http://blog.yhat.com/static/misc/data/pigeon-racing.csv")
+
+pigeon <- read.csv("http://blog.yhat.com/static/misc/data/pigeon-racing.csv",stringsAsFactors = F)
+
+ggplot(pigeon, aes(x = Pos, y = Speed)) +
+  geom_point()
+```
+
+```{d)}
+ggplot(data = pigeon, mapping = aes(x = Pos, y = Speed, col = as.factor(Sex)))+
+  geom_point(alpha = 0.5)
+```
+
+#SAT scores by State
+```{a)~b)}
+sat <- read.csv("http://www.randomservices.org/random/data/SATbyState.txt",sep = "\t")
+
+ggplot(sat, aes(x = Verbal, y = Math)) +
+  geom_point()
+```
+
+```{c)}
+ggplot(data = sat, mapping = aes(x = Verbal, y = Math, size = Rate)) +
+  geom_point(alpha = 0.5)
+```
+
+#SAT score by year
+```{a)}
+sat2 <- read.csv("http://www.randomservices.org/random/data/SATbyYear.txt", sep = "\t")
+
+ggplot(sat2, aes(x = Year, y = AVerbal)) +
+  geom_point()
+```
+
+```{b)}
+ggplot(data = sat2, mapping = aes(x = Year, y = AVerbal, size = FVerbal)) +
+  geom_point(alpha=0.5)
+```
+
+```{c)}
+ggplot(sat2, aes(x = Year, y = AMath)) +
+  geom_point()
+```
+
+```{d)}
+ggplot(data = sat2, mapping = aes(x = Year, y = AMath, size = FVerbal)) +
+  geom_point(alpha = 0.5)
+```
+
+#LaAB8
+```{histogram i)}
+install.packages('MASS')
+library(MASS)
+hist(geyser$waiting,xlab = "waiting", ylab= "freq", main = "waiting time frequency",col = "blue")
+```
+
+```{histogram ii)}}
+hist(geyser$waiting,xlab = "waiting", ylab= "freq", main = "waiting time frequency",col = "blue", breaks = seq(40,110,by = 2))
+```
+```{histogram iii)}
+hist(geyser$waiting,xlab = "waiting", ylab= "freq", main = "waiting time frequency",col = "blue", breaks = seq(40,110,by = 2), xaxt = 'n', yaxt = 'n')
+axis(1, at = seq(40,110, by = 4), cex.axis = 0.5)
+axis(2, at = seq(0,30, by = 5), cex.axis = 0.5)
+```
+
+```{scatter plot}
+data(painters)
+c1 <- painters$Drawing
+c2 <- 20-c1
+with(painters, plot(Colour,c1, pch = 16, col = "darkmagenta", xaxt = 'n', yaxt = 'n', xlab = "Colour", ylab = "Drawing"))
+points(painters$Colour,c2,pch =16, col = "blue")
+axis(1,at = seq(0,18, by = 2), cex.axis = 0.6)
+axis(2, at = seq(0,18, by = 2), cex.axis = 0.6, las = 1)
+
+abline(h = mean(c(c1,c2)), col = "cornflowerblue")
+abline(v = mean(painters$Colour), col = "gold")
+
+title(main = list("Painter's colours versus drawing", cex = 0.9, col = "deeppink"))
+```
+
+```{Line plots}
+price1 <- c(14,21,10,20,22,17,23,25,30,18)
+price2 <- c(10,19,12,21,28,15,22,29,26,20)
+plot(price1, type = "b", lwd = 2, pch =2, cex = 0.7, col = "red", xlab = "time", ylab = "price")
+lines(price2, type = "b", lwd = 2, pch = 2, cex = 0.7, col = "blue")
+title(main = list("Price of Goods", col = "darkgreen"))
+```
+
+```{ggplot2}
+install.packages('ISLR')
+library(ISLR)
+library(ggplot2)
+ggplot(Carseats,aes(x = CompPrice, y = Sales))+
+  geom_point()+
+  scale_y_continuous(trans = "sqrt")+
+  ylab("Sales in thousands")+
+  geom_smooth(method = lm, se = F)
+```
+
+```{r}
+ggplot(data = Carseats, mapping = aes(x = CompPrice, y = Sales, col = as.factor(Urban)))+
+  geom_point()+
+  scale_y_continuous(trans = "sqrt")+
+  ylab("Sales in thousands")
+```
+
+```{r}
+ggplot(data = Carseats, mapping = aes(x = CompPrice, y = Sales, shape = as.factor(US), col = as.factor(US)))+
+  geom_point()+
+  scale_y_continuous(trans = "sqrt")+
+  ylab("Sales in thousands")
+```
+
+```{r}
+ggplot(Carseats,aes(x = CompPrice, y = Sales))
+```
+
