@@ -1,0 +1,135 @@
+---
+title: "KYJ-lab18"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 5 16 '
+output: html_document
+---
+
+#Functions
+
+#PART A
+#1)
+```{r}
+toCelcius <- function(f) {
+  r1 <- (f-32)*5/9
+  return(r1)
+}
+
+toCelcius(50)
+toCelcius(77)
+toCelcius(86)
+toCelcius(98.6)
+toCelcius(32)
+toCelcius(-40)
+
+#Answer: -40°F is equivalent with -40°C.
+```
+#2)
+```{r}
+toFehrenheit <- function(c) {
+  r2 <- c*9/5+32
+  return(r2)
+}
+
+toFehrenheit(10)
+toFehrenheit(25)
+toFehrenheit(30)
+toFehrenheit(37)
+toFehrenheit(0)
+toFehrenheit(-40)
+```
+#3)
+```{r}
+div13 <- function(z) {
+  if (z%%13==0) {
+    z
+  }
+  else {}
+}
+
+```
+#4)
+```{r}
+object <- 1:500
+
+for (i in object) {
+  div13(i)
+}
+
+unlist(sapply(object,div13))
+
+```
+#5)
+```{r}
+someFn <- function(x) {
+  if (x < 13) {
+    x^2+2*x+3
+  }
+  else if (div13(x) == x) {
+    x + 3
+  }
+  else {
+    x^2+4*x-7
+  }
+}
+
+unlist(sapply(object,someFn))
+
+```
+
+
+#PART B
+#1)
+```{r}
+data(airquality)
+
+apply(airquality, 2, mean)
+
+#Answer: no, because there are missing values in Ozone and Solar.R
+```
+#2)
+```{r}
+apply(airquality, 2, mean, na.rm = T)
+```
+#3)
+```{r}
+library(dplyr)
+aq <- select(airquality, Ozone, Solar.R, Wind, Temp)
+apply(aq, 2, max, na.rm = T)
+apply(aq, 2, min, na.rm = T)
+```
+#4)
+```{r}
+airquality <- na.omit(airquality)
+f <- function(x) {
+  x-sum(x)/sd(x)
+}
+new_df <- apply(airquality, 2, f, na.omit)
+```
+#5)
+```{r}
+apply(new_df, 2, sd)
+```
+#6)
+```{r}
+data1 <- na.omit(airquality)
+tapply(data1$Temp,data1$Month,mean)
+
+#Answer: July
+```
+#7)
+```{r}
+cond <- data1$Temp<79
+temperature <- ifelse(cond, "low", "high")
+data1 <- cbind(data1, temperature)
+```
+#8)
+```{r}
+
+tapply(data1$Ozone, list(data1$temperature,data1$Month), median)
+
+#Answer(highest median): May
+#Answer(lowest median): July
+```
+
+
