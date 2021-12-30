@@ -1,0 +1,66 @@
+---
+title: "KYJ-lab8"
+output: html_document
+---
+
+#2019312486
+#Kim Yoon Ji
+
+#1.Histogram
+```{r #i)}
+hist(geyser$waiting, xlab = "waiting", ylab = "freq", main = "waiting frequency of geyser",col = "orange")
+```
+```{r #ii)}
+hist(geyser$waiting, breaks = seq(40, 110, by = 2), xlab = "waiting", ylab = "freq", main = "waiting frequency of geyser",col = "orange")
+#Answer: width of the bin was 5, and I changed it to 2
+```
+```{r iii)}
+hist(geyser$waiting, breaks = seq(40, 110, by = 2), xlab = "waiting", ylab = "freq", main = "waiting frequency of geyser", xaxt ='n', col = "orange")
+axis(1, at = seq(40,110,by=4), cex.axis=0.5)
+#Answer: line above is changing the width of each x axis from 10 to 4 and setting the size of the axis letters to 0.5
+```
+
+#2.Scatter Plots
+```{r}
+#a)
+library(MASS)
+data(painters)
+c1 <- painters$Drawing
+c2 <- 20-c1
+with(painters, plot(Colour, c1, pch = 16, col = "darkmagenta"))
+points(painters$Colour, c2, pch = 16, col = "blue")
+
+#b)
+with(painters, plot(Colour, c1, xlab = list("Colour", cex=0.9), ylab = list("Drawing", cex=0.9), pch = 16, col = "darkmagenta"))
+points(painters$Colour, c2, pch = 16, col = "blue")
+
+title(main = list("Painter's colours versus drawing", cex = 0.9, col ="deeppink"))
+
+
+#c)
+abline(v = mean(painters$Colour), col = "gold")
+abline(h = mean(c(c1,c2)), col = "cornflowerblue")
+
+#d)
+with(painters, plot(Colour, c1, xlab = list("Colour", cex=0.9), ylab = list("Drawing", cex=0.9), xaxt = 'n', yaxt = 'n', pch = 16, col = "darkmagenta"))
+points(painters$Colour, c2, pch = 16, col = "blue")
+title(main = list("Painter's colours versus drawing", cex = 0.9, col ="deeppink"))
+abline(v = mean(painters$Colour), col = "gold")
+abline(h = mean(c(c1,c2)), col = "cornflowerblue")
+axis(1, at = seq(0,18,by=2), cex.axis=0.6)
+axis(2, at = seq(6,18,by=2), cex.axis=0.6, las = 1)
+```
+
+#3.Line plots
+```{r}
+price1 <- c(14, 21, 10, 20, 22, 17, 23, 25, 30, 18)
+price2 <- c(10, 19, 12, 21, 28, 15, 22, 29, 26, 20)
+
+plot(price1, xlab = "time", ylab = "price", main = list("Price of Goods", col = "darkgreen"), lwd = 2, pch = 2, cex = 0.7, type = "b", col = "red")
+lines(price2, type = "b", lwd = 2, pch = 2, col = "blue")
+```
+
+
+
+
+
