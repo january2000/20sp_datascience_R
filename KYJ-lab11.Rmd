@@ -1,0 +1,82 @@
+---
+title: "lab 11"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 4 13 '
+output: html_document
+---
+
+#1.Plotting with ggplot - Carseats
+```{r}
+#i)
+ggplot(Carseats, aes(x = CompPrice, y = Sales)) +
+  geom_point()
+```
+
+```{r}
+#ii)
+ggplot(Carseats, aes(x = CompPrice, y = Sales)) +
+  scale_y_continuous(trans = 'sqrt') +
+  geom_point()
+```
+
+```{r}
+#iii)
+ggplot(Carseats, aes(x = CompPrice, y = Sales)) +
+  scale_y_continuous(trans = 'sqrt') +
+  ylab("Sales in thousands") +
+  geom_point()
+
+
+```
+
+```{r}
+#iv)
+ggplot(Carseats, aes(x = CompPrice, y = Sales)) +
+  scale_y_continuous(trans = 'sqrt') +
+  ylab("Sales in thousands") +
+  geom_smooth(method = lm, col = "red", se = F) +
+  geom_point()
+```
+
+```{r}
+#v)
+
+ggplot(data = Carseats, mapping = aes(x = CompPrice, y = Sales, col = as.factor(Urban))) +
+  scale_y_continuous(trans = 'sqrt') +
+  ylab("Sales in thousands") +
+  geom_point()
+
+#Answer: I see no pattern beteeen Urban and Sale or Urban and Price.
+```
+
+```{r}
+#vi)
+ggplot(data = Carseats, mapping = aes(x = CompPrice, y = Sales, shape = as.factor(US), col = as.factor(US))) +
+  scale_y_continuous(trans = 'sqrt') +
+  ylab("Sales in thousands") +
+  geom_point()
+#Answer: I see no relationship between presence of US of the store and the CompPrice
+
+```
+
+#Iris dataset
+```{r}
+#i)
+ggplot(iris, aes(x = Petal.Width, y = Sepal.Width)) +
+  geom_point()
+```
+
+```{r}
+#ii)
+ggplot(data = iris, mapping = aes(x = Petal.Width, y = Sepal.Width, col = as.factor(Species), size = Petal.Length)) + 
+  geom_point()
+#Answer: setosa species has narrow petal width and wide sepal width, versocolor species has narrow sepal width and middle sized petal width, and virginca has wide patal width compared to each other.
+```
+
+```{r}
+#iii)
+ggplot(data = iris, mapping = aes(x = Petal.Width, y = Sepal.Width, col = as.factor(Species), size = Petal.Length)) + 
+  geom_point()
+#Answer: setosa species has short petal length, wide sepal width, and narrow petal width. Versicolor species has middle sized in all sepal width, petal width and petal length compared to others. Virginica species has the longest petal length, wide petal width.
+```
+
