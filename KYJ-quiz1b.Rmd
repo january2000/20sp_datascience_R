@@ -1,0 +1,257 @@
+---
+title: "Quiz 1b"
+output: html_document
+---
+
+Name: Kim Yoon Ji
+ID: 2019312486
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = True)
+```
+Attempt all questions. All questions could be answered using R code so provide all the code that you used to work out each of your answer.
+
+PART A
+0. Load the MASS package and the Cars93 dataset to your environment.
+```{r}
+library(MASS)
+data(Cars93)
+```
+
+1. How many observations and variables are there in this dataset?
+```{r}
+# ENTER YOUR CODE BELOW
+library(MASS)
+data(Cars93)
+ncol(Cars93)
+nrow(Cars93)
+```
+Proceed to answer more on iCampus Quiz interface.
+
+2. What does the "Turn.circle" column indicate?
+```{r}
+# ENTER YOUR CODE BELOW
+table(Cars93$Turn.circle)
+summary(Cars93$Turn.circle)
+```
+Proceed to answer more on iCampus Quiz interface.
+
+3. Use factor() to convert the "Passengers" column to a factor (unordered)
+If you make a mistake, just reload the dataset via
+data(Cars93) and start again.
+```{r}
+# ENTER YOUR CODE BELOW
+data("Cars93")
+passengers <- factor(Cars93$Passengers)
+
+```
+
+How many levels does this factor have?
+```{r}
+# ENTER YOUR CODE BELOW
+nlevels(passengers)
+```
+Proceed to answer more on iCampus Quiz interface.
+
+
+4. Rename the factor levels to the following:
+2:"2-4 seater", 4:"2-4 seater", 5:"5-6 seater", 6:"5-6 seater", 7:"7-8 seater", 8:"7-8 seater" [2-3 marks]
+If you make a mistake, redo 3 before starting this one.
+```{r}
+# ENTER YOUR CODE BELOW
+data("Cars93")
+passengers_cat <- cut(Cars93$Passengers, breaks = c(2,4,6,8), labels = c("2-4 seater", "5-6 seater", "7-8 seater"))
+```
+
+How many levels does this factor have now?
+```{r}
+# ENTER YOUR CODE BELOW
+nlevels(passengers_cat)
+```
+Proceed to answer more on iCampus Quiz interface.
+
+
+
+5. Reorder the factor to the following:
+"2-4 seater" < "5-6 seater" < "7-8 seater"
+```{r}
+# ENTER YOUR CODE BELOW
+passengers_cat <- ordered(passengers_cat, levels = c("2-4 seater", "5-6 seater", "7-8 seater"))
+```
+
+
+6. Given that a car's "EngineFitness" is calculated by the product of its EngineSize and Horsepower, find the EngineFitness, EngineSize and Horsepower of the engine with the biggest EngineFitness. Consider only engine sizes 5 or less. You MUST use loops, basic arithmetic (+,-,/,*), comparisons, if constructs and assignment operations and no other functions to compute this.
+```{r}
+# ENTER YOUR CODE BELOW
+
+
+```
+Proceed to answer more on iCampus Quiz interface.
+
+7. What is the median Price for Cars originated from "USA"? You MUST use median() to compute this question. You may also want to use with() and subset().
+```{r}
+# ENTER YOUR CODE BELOW
+with((subset(Cars93, Origin == "USA", Price)),median(Price))
+```
+Proceed to answer more on iCampus Quiz interface.
+
+
+8. Create a new column called "Safety" with the following values:
+"safe" if AirBags are available for Driver & Passenger or the Turn.cirle is greater than 40.
+"not safe" if there are no air bags or the Turn.circle is less than 35. 
+"moderate" for all other cases.
+If you made a mistake, assign the column Safety with a random string such as "NONE" and try again. You should not see any "NONE"s.
+Use ifelse() or if-else construct to answer this question.
+```{r}
+# ENTER YOUR CODE BELOW
+cond1 <- c(Cars93$AirBags =="Driver & Passenger"| Cars93$Turn.circle >40)
+
+Safety <- ifelse(cond1, "safe", "moderate")
+
+cond2 <- c(Cars93$AirBags == "None" | Cars93$Turn.circle <35)
+
+Safety <- ifelse(cond2, "not safe", Safety)
+
+Cars93 <-cbind(Cars93, Safety)
+```
+
+9. How many cars are considered to be "safe" under the conditions stated in the previos question?
+```{r}
+# ENTER YOUR CODE BELOW
+sum(Cars93$Safety == "safe")
+```
+Proceed to answer more on iCampus Quiz interface.
+
+
+Load ggplot2
+```{r}
+library(ggplot2)
+```
+
+
+10. Using ggplot, plot a scatter plot of Horsepower on the x axis against Price on the y axis. Label y axis "Price (Thousand)" using the ylab() function added to your plot layer.
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(Cars93, aes(x = Horsepower, y = Price))+
+  ylab("Price (Thousand)")+
+  geom_point()
+```
+
+
+11. Transform the y-axis values to their square roots. Add it as a layer to your plot from 10 and draw out the plot.
+You may want to save your plot as "plot" and reuse it for the next few questions to save time from typing.
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(Cars93, aes(x = Horsepower, y = Price))+
+  ylab("Price (Thousand)")+
+  geom_point()+
+  scale_y_continuous(trans = "sqrt")
+```
+
+
+12. Keeping the plot from 11, add a regression line using the geom_smooth() function with method=lm. Do not show the confidence interval. Are Horsepower and Price correlated positively?
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(Cars93, aes(x = Horsepower, y = Price))+
+  ylab("Price (Thousand)")+
+  geom_point()+
+  scale_y_continuous(trans = "sqrt")+
+  geom_smooth(method = "lm", se = F)
+
+```
+Proceed to answer more on iCampus Quiz interface.
+
+13. Keeping the plot from 11, split the data by colours using AirBags. Remember to convert AirBags to a factor first. Is there a correlation between AirBags standard and age or AirBags standard and Price?
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(data = Cars93, mapping = aes(x = Horsepower, y = Price, col = as.factor(AirBags)))+
+  ylab("Price (Thousand)")+
+  geom_point()+
+  scale_y_continuous(trans = "sqrt")
+```
+Proceed to answer more on iCampus Quiz interface.
+
+14. Keeping the plot from 11, split the data by size using MPG.city. Is MPG.city generally positively or negatively correlated with Price?
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(data = Cars93, mapping= aes(x = Horsepower, y = Price, size = MPG.city))+
+  ylab("Price (Thousand)")+
+  geom_point()+
+  scale_y_continuous(trans = "sqrt")
+```
+Proceed to answer more on iCampus Quiz interface.
+
+
+####################################################################################
+
+PART B
+Working with Covid-19 DATA
+Ensure the ggplot2 package is loaded
+library(ggplot2)
+You are provided a COVID-19 dataset taken from April 27th showing basic statistics from Asian countries.
+
+####################################################################################
+
+15. Download the file provided (covid-apr27.txt) and load it into RStudio using read.csv(). Use the appropriate parameters when loading. [3 marks]
+```{r}
+# ENTER YOUR CODE BELOW
+covid <- read.csv("covid-apr27.txt")
+```
+
+16. Using gpplot, output a scatter plot of the Total.Cases in the x-axis and Total.Recovered on the y-axis. Do you see any outliers in this data? [4 marks]
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(covid, aes(x = Total.Cases, y = Total.Recovered))+
+  geom_point()
+```
+Proceed to answer more on iCampus Quiz interface.
+
+
+17. Identify the countries where the values for both Total.Cases and Total.Recovered are way off compared to the other values. Use a suitable threshold value for Total.Cases to identify these rows. You may use subset() for this. [4 marks]
+Which countries are these?
+```{r}
+# ENTER YOUR CODE BELOW
+subset(covid, Total.Cases >60000 & Total.Recovered > 20000,Country)
+```
+Proceed to answer more on iCampus Quiz interface.
+
+18. Proceed to answer more on iCampus Quiz interface.
+
+
+19. Proceed to answer more on iCampus Quiz interface.
+
+
+20. Transform both the x and y axis to their square roots and redo the plot. [3 marks]
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(covid, aes(x = Total.Cases, y = Total.Recovered))+
+  geom_point()+
+  scale_x_continuous(trans = "sqrt")+
+  scale_y_continuous(trans = "sqrt")
+
+```
+
+
+21. It seems that using proportioned numbers for countries can reflect the situation better. Plot the total cases per million population, Tot.Cases.1M.pop on the x axis and the number of tests per million population, Tests.1M.pop on the y axis, transforming both the x and y axes to their square roots.
+Are the total cases per million population and the tests per million population positively related? [4 marks]
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(covid, aes(x = Tot.Cases.1M.pop, y = Tests.1M.pop))+
+  geom_point()+
+  scale_x_continuous(trans = "sqrt")+
+  scale_y_continuous(trans = "sqrt")
+```
+Proceed to answer more on iCampus Quiz interface.
+
+
+22. You also want to investigate if the number of deaths per million is correlated with the total cases per million population. Plot the total cases per million population (Tot.Cases.1M.pop) on the x-axis and the number of deaths per million population (Deaths.1M.pop) on the y-axis, transforming both the x- and y-axes to their square roots. [4 marks]
+```{r}
+# ENTER YOUR CODE BELOW
+ggplot(covid, aes(x = Tot.Cases.1M.pop, y = Deaths.1M.pop))+
+  geom_point()+
+  scale_x_continuous(trans = "sqrt")+
+  scale_y_continuous(trans = "sqrt")
+```
+
+23. Proceed to answer more on iCampus Quiz interface. [4 marks]
+
