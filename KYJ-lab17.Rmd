@@ -1,0 +1,98 @@
+---
+title: "KYJ-lab17"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 5 6 '
+output: html_document
+---
+
+```{0)}
+library(dplyr)
+library(magrittr)
+install.packages("gapminder")
+library(gapminder)
+```
+
+```{1)}
+a <- c(1, 2, 3, 3, 2, 1)
+min_rank(a) #135531
+dense_rank(a) #123321
+row_number(a) #135642
+```
+
+```{2)}
+my_gap <- gapminder
+```
+
+```{3)}
+my_gap %>% filter(country == "Korea, Rep.")
+#Answer: 12
+```
+
+```{4)} 
+my_gap %>% group_by(continent) %>% summarise(n())
+#Answer: Africa: 624, Americas: 300, Asia: 396, Europe: 360, Oceania: 24
+```
+
+```{5)}
+my_gap %>% filter(min_rank(lifeExp) ==1)
+my_gap %>% filter(min_rank(lifeExp) == max(min_rank(lifeExp)))
+#Answer: lowest=Rwanda, highest=Japan
+```
+
+```{6)}
+gap_year <- my_gap %>% group_by(year)
+seventyseven <- gap_year %>% filter(year == 1977)
+seventyseven %>% filter(min_rank(lifeExp) == 1)
+seventyseven %>% filter(min_rank(lifeExp) ==max(min_rank(lifeExp)))
+#Answer: lowest=Cambodia, highest = Iceland
+```
+
+```{7)}
+gap_cont <- my_gap %>% group_by(continent)
+gap_cont %>% summarise(n_distinct(country))
+#Answer: Africa: 52, Americas: 25, Asia: 33, Europe: 30, Oceania: 2
+```
+
+```{8)}
+eightyseven <- gap_year %>% filter(year == 1987)
+Af <- eightyseven %>% filter(continent == "Africa") %>% select(everything())
+Af %>% filter(min_rank(lifeExp) == 1)
+Af %>% filter(min_rank(lifeExp) == max(min_rank(lifeExp)))
+#Anwer: lowest=Angola, highest=Reunion
+```
+
+```{9)}
+Af2 <- gap_year %>% filter(continent == "Africa") %>% select(everything())
+Af2 %>% filter(min_rank(lifeExp) == 1)
+Af2 %>% filter(min_rank(lifeExp) == max(min_rank(lifeExp)))
+```
+
+```{10)}
+Af3 <- gap_year %>% filter(year >= 1960 & country =="Gambia"| country == "Sierra Leone"|country == "Reunion" | country == "Rwanda") %>% select(everything())
+Af3 <- Af3 %>% mutate(lifeRank = min_rank(lifeExp))
+S <-Af3 %>% filter(country == "Sierra Leone" & lifeRank == 1)
+nrow(S)
+#Answer: 10 times
+```
+
+```{11)}
+Af4 <- my_gap %>% group_by(country) %>% filter(continent == "Africa")
+Af4 <- Af4 %>% mutate(prev = lag(lifeExp), diff.lifeExp = lifeExp - lag(lifeExp))
+Af4 <- na.omit(Af4)
+
+```
+
+#Joins
+```{12)}
+data("country_codes")
+data("gapminder")
+d <- distinct(gapminder, country, continent)
+l_j <- left_join(d, country_codes)
+```
+
+```{13)}
+data("country_colors")
+i_j <- inner_join(d, country_codes)
+f_j <- full_join(d, country_codes)
+```
+
