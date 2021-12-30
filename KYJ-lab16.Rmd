@@ -1,0 +1,87 @@
+---
+title: "KYJ-lab16"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 5 5 '
+output: html_document
+---
+
+```{0}
+library(dplyr)
+library(ggplot2)
+data("diamonds")
+```
+
+#dplyr verbs
+```{a)}
+filter(diamonds, clarity == "I1")
+View(head(filter(diamonds, clarity == "I1"), 10))
+```
+
+```{b)}
+filter(diamonds, price >= 10000 & price <= 12000)
+```
+
+```{c)}
+select(filter(diamonds, carat > 4), carat, cut, color, clarity)
+#Answer: 5 diamonds
+```
+
+```{d)}
+n_d <- select(filter(diamonds, cut == max(cut) | clarity == max(clarity)), carat, cut, color, clarity)
+```
+
+```{e)}
+head(select(arrange(n_d,carat),cut),3)
+#Answer: Ideal
+```
+
+```{f)}
+new_diamonds <- mutate(diamonds, price.per.weight = price/carat)
+```
+
+```{g)}
+View(arrange(new_diamonds, price.per.weight, desc(depth)))
+```
+
+```{h)}
+summarise(group_by(diamonds,color), max.carat = max(carat), mean.price = mean(price), IQR.price = IQR(price))
+```
+
+#Piping(%>%)
+```{a)}
+library(magrittr)
+diamonds %>% filter(clarity == "I1")
+```
+
+```{b)}
+diamonds %>% filter(price >= 10000 & price <= 12000)
+```
+
+```{c)}
+diamonds %>% filter(carat > 4) %>% select(carat, cut, color, clarity)
+#Answer: 5
+```
+
+```{d)}
+n_d_2<-diamonds %>% filter(cut == max(cut) | clarity == max(clarity)) %>% select(carat, cut, color, clarity) 
+View(n_d_2)
+```
+
+```{e)}
+n_d_2 %>% arrange(carat) %>% select(cut) %>% head(3)
+#Answer: Ideal
+```
+
+```{f)}
+new_diamonds_2 <- diamonds %>% mutate(price.per.weight = price/carat)
+```
+
+```{g)}
+new_diamonds_2 %>% arrange(price.per.weight,desc(depth)) %>% View()
+```
+
+```{h)-1}
+diamonds %>% group_by(cut) %>% summarise(freq = n(), mean.price = mean(price), q90.wt = quantile(carat,0.9)) %>% filter(freq >= 5000) %>% arrange(desc(cut))
+```
+
+
