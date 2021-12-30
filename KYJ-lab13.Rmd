@@ -1,0 +1,84 @@
+---
+title: "KYJ-LAB13"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 5 14 '
+output: html_document
+---
+
+#1.Basic date and time functions in R
+#a)
+```{r}
+Sys.Date()
+Sys.time()
+date()
+```
+#b)
+```{r}
+format(Sys.Date(), "%d"); format(Sys.time(), "%H")
+```
+#c)
+```{r}
+lct <- Sys.getlocale("LC_TIME");Sys.setlocale("LC_TIME", "C")
+grand_father <- "01 15th, 1916"
+grand_father_d <- as.Date(grand_father, format = "%m %dth, %Y")
+format(grand_father_d, "%A")
+```
+#d)
+```{r}
+strDates <- c("Sep 2, 1945", "1953/07/27", "20th July 1969", "11 March '89")
+Dates <- as.Date(strDates, c("%b %d,%Y", "%Y/%m/%d", "%dth %B %Y", "%d %B '%y")); Dates
+```
+#e)
+```{r}
+Sys.Date()-as.Date("March 9th, 2020", "%B %dth, %Y")
+```
+
+
+#2.Date and time manipulation using lubridate
+#a)
+```{r}
+library(lubridate)
+today()
+now()
+```
+#b-b)
+```{r}
+today <- today()
+now <- now()
+day <- day(today)
+hour <- hour(now)
+day;hour
+```
+#b-c)
+```{r}
+g_f <- "01 15th, 1916"
+mdy(g_f)
+weekdays(mdy(g_f))
+```
+#b-d)
+```{r}
+mdy("Sep 2, 1945")
+ymd("1953/07/27")
+dmy("20th July 1969")
+dmy("11 March '89")
+```
+#b-e)
+```{r}
+today()-mdy("March 9th, 2020")
+```
+#c)
+```{r}
+#i)
+birthday <- ymd("2000.01.13")
+leap_year(birthday)
+#answer: Yes I was vorn in a leap year
+
+#ii)
+week(birthday)
+#answer: week 2
+
+#iii)
+round_date(birthday, unit = "month")
+#answer: I would have been slightly older with this rounded birth date
+```
+
