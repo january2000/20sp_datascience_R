@@ -1,0 +1,110 @@
+---
+title: "KYJ-lab19"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 5 16 '
+output: html_document
+---
+
+#PART A
+#1)
+```{r}
+data("mtcars")
+carname <- c(rownames(mtcars))
+grep("[z]",carname, value = T)
+```
+#2)
+```{r}
+sentence <- "A favourite copy set by English teachers for their pupils, is the following sentence, because it contains every letter of the alphabet:'A quick brown fox jumps over the lazy dog."
+
+#i)
+i <- gsub("[[:punct:]]","",sentence)
+
+#ii)
+ii <- strsplit(sentence, split = " ")
+class(ii)
+#Answer: list
+
+#iii)
+iii <- unlist(ii)
+class(iii)
+#Answer: character
+
+#iv)
+grep("is", iii, value = T)
+
+#v)
+
+#vi)
+
+#vii)
+vii <- paste0(iii,collapse = "")
+vii
+```
+
+#PART B
+```{r}
+library(stringr)
+data(fruit)
+```
+#fruit
+#1)
+```{r}
+str_subset(fruit,"rr")
+```
+#2)
+```{r}
+str_subset(fruit, "[e]$")
+```
+#3)
+```{r}
+str_subset(fruit, " ")
+```
+#4)
+```{r}
+
+```
+#5)
+```{r} 
+for (k in 1:length(fruit)) {
+  if (str_length(fruit[k]) >=12 ) {
+    print(fruit[k])
+  }
+}
+```
+#words
+#6)
+```{r}
+data(words)
+length(str_subset(words, "^[aeiou]"))
+```
+#7)
+```{r}
+no_vowel <- !str_detect(words,"[aeiou]") 
+no_vowel_words <- words[no_vowel] 
+length(no_vowel_words)
+```
+#8)
+```{r}
+end <- str_subset(words, "ise$"); str_subset(words, "ize$")
+```
+#9)
+```{r}
+str_replace_all(end, "ise", "ize")
+```
+#sentences
+#10)
+```{r}
+data("sentences")
+length(str_subset(sentences, "^[AEIOU]+[^aeiou ]"))
+#Answer: 39
+```
+#11)
+```{r}
+sentences1 = str_replace_all(sentences, pattern = "[[:punct:]]", "")
+sentences2 = str_split(sentences1, pattern = " ")
+word_per_sentence = sapply(sentences2,length)
+summary(word_per_sentence)
+
+sentences2[which(word_per_sentence == 12)]
+```
+
