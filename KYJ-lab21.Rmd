@@ -1,0 +1,109 @@
+---
+title: "KYJ-lab21"
+author: "2019312486 Yoon Ji Kim"
+date: '2020 5 23 '
+output: html_document
+---
+
+#A) T-test
+```{r}
+library(dplyr)
+library(gapminder)
+library(magrittr)
+```
+#1)
+```{r}
+group_gdp <- group_by(gapminder, country)
+mean_gdp <- summarise(group_gdp, mean = mean(gdpPercap))
+filter(mean_gdp, country == "Canada" | country == "Mali")
+
+#Answer: Canada's GDP per capita is much more higher than Mali's GDP per capita.
+```
+#2)
+```{r}
+df <- gapminder %>% select(country,gdpPercap) %>% filter(country == "Canada" | country == "Mali")
+
+t.test(data=df, gdpPercap ~ country)
+
+#Null hypothesis: p-value:1.733e-06
+#Is difference real? yes
+#What is the 95% CI if there is a difference: 16520.52 26954.78
+```
+#3)
+```{r}
+df2 <- gapminder %>% select(country, pop) %>% filter(country == "Korea, Rep." | country == "Japan")
+
+t.test(data = df2, pop ~ country)
+
+#Answer: Difference in Korea and Japan's popluation is significant.
+```
+
+#B) Combining pipes with ggplot
+```{r}
+library(ggplot2)
+```
+#3)
+```{r}
+gapminder %>% filter(gdpPercap < 50000) %>% ggplot() + geom_point() + aes(x = lifeExp, y = gdpPercap)
+```
+#4)
+```{r}
+gapminder %>% filter(gdpPercap < 50000) %>% ggplot() + geom_point(alpha = 0.5) + aes(x = lifeExp, y = gdpPercap, col = continent, size = pop) + scale_color_brewer(palette = "Set1")
+```
+#5)
+```{r}
+gapminder %>% filter(gdpPercap < 50000) %>% ggplot() + geom_point(alpha = 0.5) + aes(x = lifeExp, y = gdpPercap, col = continent, size = pop) + scale_color_brewer(palette = "Set1") + scale_y_continuous(trans = "log") + geom_smooth(method = "lm")
+```
+#6)
+```{r}
+gapminder %>% filter(gdpPercap < 50000) %>% ggplot() + geom_point(alpha = 0.5) + aes(x = lifeExp, y = gdpPercap, col = continent, size = pop) + scale_color_brewer(palette = "Set1") + scale_y_continuous(trans = "log") + geom_smooth(method = "lm") + facet_wrap(~continent)
+```
+
+#C) Linear Regression - gapminder
+#7)
+```{r}
+attach(gapminder)
+mode1 <- lm(lifeExp ~ gdpPercap)
+summary(mode1)
+
+#Answer: Yes. The difference between the means of these two variables is significant.
+```
+#8)
+```{r}
+summary(lm(gdpPercap ~ pop))
+
+#Answer: p value = 0.2909, the diffence is not significant.
+```
+#9)
+```{r}
+summary(lm(gdpPercap ~ year))
+summary(lm(gdpPercap ~ continent))
+summary(lm(gdpPercap ~ country))
+```
+#10)
+```{r}
+attributes(mode1)
+
+mode1$residuals
+mode1$coefficients
+```
+
+#11) mtcars
+```{r}
+data(mtcars)
+
+mc <- filter(mtcars, gear < 5)
+
+horsepower <- lm(mpg ~ hp, data = mc)
+weight <- lm(mpg ~ wt, data = mc)
+displacement <- lm(mpg ~ disp, data = mc)
+qsec <- lm(mpg ~ qsec, data = mc)
+
+horsepower$coefficients
+weight$coefficients
+displacement$coefficients
+qsec$coefficients
+
+#Answer: qsec
+```
+
