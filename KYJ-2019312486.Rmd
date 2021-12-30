@@ -1,0 +1,175 @@
+---
+title: "Assignment2"
+author: "Kim Yoon Ji"
+date: '2020 5 26 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load packages and libraries
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("laeken")
+library(laeken)
+data("ses")
+data("eusilc")
+library(dplyr)
+library(magrittr)
+library(ggplot2)
+```
+
+
+a) Get all information of the female employment in location AT1 [3]
+```{r}
+info <- filter(ses, location == "AT1" & sex == "female"); info
+```
+
+b) What is the age range with the most number of female workers in location AT1? [5]
+```{r}
+summarise(group_by(info, age), n())
+```
+Answer: (39,49])
+
+c) Find the education level with the lowest and the highest earnings at each location. Use min_rank() and order by location so that the highest earning can be viewed after the lowest earning for each location. Return only these 3 columns.............................................[5]
+```{r}
+at1 <- filter(ses, location == "AT1")
+at2 <- filter(ses, location == "AT2")
+at3 <- filter(ses, location == "AT3")
+
+rbind(select(filter(at1, min_rank(earnings) == 1),location, earnings, education), select(filter(at1, min_rank(earnings) == max(min_rank(earnings))),location, earnings, education), select(filter(at2, min_rank(earnings) == 1),location, earnings, education), select(filter(at2, min_rank(earnings) == max(min_rank(earnings))),location, earnings, education), select(filter(at3, min_rank(earnings) == 1),location, earnings, education), select(filter(at3, min_rank(earnings) == max(min_rank(earnings))),location, earnings, education))
+
+```
+
+d) Get summary statistics for each location; 1) average earnings avg_earn 2) the maximum earnings max_earn 3) minimum earnings min_earn and 4) difference between maximum and minimum earnings diff_earn. Arrange by the smallest diff_earn to the biggest....[5]
+```{r}
+avg_earn <- summarise(group_by(ses, location), "avg" = sum(earnings)/length(earnings))
+
+max_earn <- summarise(group_by(ses, location), "max" = max(earnings))
+
+min_earn <- summarise(group_by(ses, location), "min" = min(earnings))
+
+max_min <- inner_join(max_earn, min_earn)
+diff_earn <- c(max_min$max - max_min$min)
+diff_earn <- sort(diff_earn)
+
+max_min <- cbind(max_min,diff_earn); max_min
+```
+
+
+e) Use ggplot(), to create a bar plot of the difference between the maximum and minimum earnings, diff_earn for each location. You can use the result of d) for the plot.................[5]
+```{r}
+ggplot(max_min, aes(x = location, y = diff_earn)) +
+  geom_bar(stat = "identity")
+```
+
+f) Create a scatter plot of working hours (hoursPaid) versus earningsMonth splitting by colour using fullPart and faceted by education. To make the plot clearer, transform the x and y variables by log. At each education level, explain the relationship among the variables (working hours, earningsMonth, fullPart and education)........................................[7]
+```{r}
+ggplot(data = ses, mapping = aes(x = hoursPaid, y = earningsMonth, col = fullPart)) +
+  facet_wrap(~education) +
+  scale_x_continuous(trans = "log") +
+  scale_y_continuous(trans = "log") +
+  geom_point(alpha = 0.5)
+```
+Answer: In every education level, there are more PTs than PTs, and FT tends to earn more money monthly than PT, but works less. Most datas are concentrated in educattion level, ISCED 2, ISCED 3 and 4. It means many people are in meduim level of education.
+
+
+# 2.
+```{r}
+data("eusilc")
+help(eusilc)
+```
+
+
+a) Inspect the values for the variable age. Is there any problem in the values for age? If so, explain what could have caused it and solve it appropriately................................................[4]
+```{r}
+select(filter(eusilc, age < 0), age)
+for (i in 1:length(eusilc$age)) {
+  if (eusilc$age[i] < 0) {
+    eusilc$age[i] <- 0
+  }
+}
+```
+Answer:There are ages that are under 0. 
+
+b) Find the maximum, minimum and average of cash income (py010n) and unemployment benefit (py090n) by each citizenship (pb220a). Just use the values of py010n and py090n that are more than 0 ..............................[6]
+```{r}
+cash_income <- select(filter(eusilc, py010n > 0), pb220a, py010n)
+unemployment_benefit <- select(filter(eusilc, py090n > 0), pb220a, py090n)
+
+group_citizen_cash <- group_by(cash_income, pb220a)
+group_citizen_unben <- group_by(unemployment_benefit, pb220a)
+
+max_min_avg <- cbind(select(summarise(group_citizen_cash, "max.cash.income" = max(py010n)),pb220a,max.cash.income), select(summarise(group_citizen_cash, "min.cash.income" = min(py010n)), min.cash.income), select(summarise(group_citizen_cash, "avg.cash.income" = sum(py010n)/length(py010n)), avg.cash.income), select(summarise(group_citizen_unben, "max.unemployment.benefit" = max(py090n)), max.unemployment.benefit), select(summarise(group_citizen_unben, "min.unemployment.benefit" = min(py090n)), min.unemployment.benefit), select(summarise(group_citizen_unben, "avg.unemployment.benefit" = sum(py090n)/length(py090n)),avg.unemployment.benefit)); max_min_avg
+```
+
+c) Among the people who received survivor benefits (py110n), sickness benefits (py120n) and disability benefits (py130n), count the number of people who received all the benefits as ALL, the number of people who received just two of these benefits as TWO, the number of people who received just one benefit as ONE and the number of people who received at least one benefits as TOTAL. Do this for each economic status (pl030). In which economic status did people receive the most number of benefits? Is there any relationship between economic status and the received benefits? Justify your opinion.........................[12]
+```{r}
+group_eco_stat <- group_by(na.omit(eusilc), pl030)
+
+ALL <- select(filter(group_eco_stat, py110n > 0 & py120n > 0 & py130n > 0), pl030, rb030)
+nrow(ALL)
+
+two_1 <- select(filter(group_eco_stat, py110n > 0 & py120n > 0 & py130n == 0), pl030, rb030)
+two_2 <- select(filter(group_eco_stat, py110n > 0 & py120n == 0 & py130n > 0), pl030, rb030)
+two_3 <- select(filter(group_eco_stat, py110n == 0 & py120n > 0 & py130n > 0), pl030, rb030)
+TWO <- rbind(two_1, two_2, two_3)
+nrow(TWO)
+
+
+one_1 <- select(filter(group_eco_stat, py110n > 0 & py120n == 0 & py130n == 0), pl030, rb030)
+one_2 <- select(filter(group_eco_stat, py110n == 0 & py120n > 0 & py130n == 0), pl030, rb030)
+one_3 <- select(filter(group_eco_stat, py110n == 0 & py120n == 0 & py130n > 0), pl030, rb030)
+ONE <- rbind(one_1, one_2, one_3)
+nrow(ONE)
+
+TOTAL <- rbind(ALL, ONE, TWO)
+nrow(TOTAL)
+
+summarise(ONE, "num of people" = length(pl030))
+summarise(TWO, "num of people" = length(pl030))
+summarise(TOTAL, "num of people" = length(pl030))
+```
+Answer: People who are in economic status '5' got one or two or at least one benefits a lot more compared to other economic status.
+
+d) A person's total income is given as the sum of income from land (hy040n), family allowance (hy050n), housing allowance (hy070n), cash received (hy080n), capital investment (hy090n) and income under 16 (hy110n) minus the cash paid (hy130n). Get the average income for each household. You may want to mutate a column for the total income and then work out the average for each household..................................................[6]
+```{r}
+group_household <- group_by(eusilc, db030)
+have_total <- mutate(group_household, total_income = sum(hy040n, hy050n, hy070n, hy080n, hy090n,hy110n, hy130n))
+avg_income <- unique(select(mutate(group_by(have_total, db030), avg_income = total_income/length(db030)), db030, avg_income))
+```
+
+e) Using the same formula for total income in d), find the mean income per household size (hsize). Save the result in a new data frame df. Then pipe df to ggplot() to plot the mean of income against hsize and draw a linear line without the confidence interval...........[6]
+```{r}
+df <- unique(select(mutate(group_by(have_total, db030), avg_income = total_income/hsize), db030, hsize, avg_income))
+
+df %>% ggplot() + geom_point() + geom_smooth(method = lm, se = F) + aes(x = hsize, y = avg_income)
+```
+ 
+f) Using df, perform linear regression to see if household size affects the average income per household size, average.income. Save the model as fit1. What’s the linear formula? Seeing the summary of linear regression, can you say that household size influences the average income per household size? Explain................................................[6]
+```{r}
+fit1 <- lm(hsize ~ avg_income, data = df)
+summary(fit1)
+```
+Answer: It can be said that household size influences the average income per household size becuae the p value is smaller than 0.05.
+
+g) Filter all data within federal state Austria (there are Upper Austria and Lower Austria). From this, create a new column named pIncome containing the sum of employee cash (py010n), cash benefits (py050n), unemployment benefits (py090n), old-age benefits (py100n), survivor’s benefits (py110n), sickness benefits (py120n), disability benefits (py130n) and education allowance (py140n) for each individual. Then draw a stacked bar plot of economic status (pl030) against pIncome split by gender (fill different colours in the bar for male and female). Use labs() to give the appropriate labelling for the axes, legend and <Your name>. A sample is given in the next page. Explain the stacked bar. [13]
+```{r}
+AU <- filter(eusilc, db040 == "Upper Austria" | db040 == "Lower Austria")
+AU <- na.omit(AU)
+
+AU <- mutate(group_by(AU, rb030), pIncome = sum(py010n, py050n, py090n, py100n, py110n, py120n, py130n, py140n))
+
+AU %>% ggplot() + geom_bar(position = "stack", stat = "identity") + aes(x = pl030, y = pIncome, fill = rb090) +labs(x = "economic status", y = "Income and Benefits", condition = "gender", subtitle = "Author: Kim Yoon JI", title = "Income by economic status and gender Upper and Lower Austria", fill = "Gender")
+```
+
+
+
+h) Using the new data from g), make a linear regression to relate dependent variable, pIncome with income status pl030. What’s the formula of this regression? Is this linear relationship significant? Explain your answer. [7]
+```{r}
+summary(lm(pIncome ~ pl030, data = AU))
+```
+Answer: This linear relationship is significant becaue the p  value is smaller than 0.05.
